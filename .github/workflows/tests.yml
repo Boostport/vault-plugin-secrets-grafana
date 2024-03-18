@@ -19,7 +19,7 @@ jobs:
       - name: Run tests
         run: go test -v ./...
         env:
-          TEST_ACC: 1
+          VAULT_ACC: '1'
           TEST_GRAFANA_CLOUD_TOKEN: ${{ secrets.TEST_GRAFANA_CLOUD_TOKEN }}
           TEST_GRAFANA_CLOUD_STACK_SLUG: ${{ secrets.TEST_GRAFANA_CLOUD_STACK_SLUG }}
           TEST_GRAFANA_CLOUD_REGION: ${{ secrets.TEST_GRAFANA_CLOUD_REGION }}
