@@ -1,0 +1,32 @@
+builds:
+  - main: ./cmd/vault-plugin-secrets-grafana
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+gomod:
+  proxy: true
+
+archives:
+  - format: binary
+
+checksum:
+  algorithm: sha256
+
+signs:
+  - cmd: cosign
+    certificate: "${artifact}.pem"
+    output: true
+    artifacts: checksum
+    args:
+      - sign-blob
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - --yes

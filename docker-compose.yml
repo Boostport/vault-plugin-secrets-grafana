@@ -1,0 +1,14 @@
+services:
+  test:
+    image: golang:${GO_VERSION}
+    working_dir: /build
+    command:
+      - go test -v ./...
+    environment:
+      - TEST_ACC=${TEST_ACC}
+      - TEST_GRAFANA_CLOUD_TOKEN=${TEST_GRAFANA_CLOUD_TOKEN}
+      - TEST_GRAFANA_CLOUD_STACK_SLUG=${TEST_GRAFANA_CLOUD_STACK_SLUG}
+      - TEST_GRAFANA_CLOUD_REGION=${TEST_GRAFANA_CLOUD_REGION}
+      - TEST_GRAFANA_CLOUD_ORG_IDENTIFIER=${TEST_GRAFANA_CLOUD_ORG_IDENTIFIER}
+    volumes:
+      - .:/source
