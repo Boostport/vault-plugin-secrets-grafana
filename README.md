@@ -1,6 +1,8 @@
 # Vault Plugin: Grafana Secrets Backend
+[![Tests](https://github.com/Boostport/vault-plugin-secrets-grafana/actions/workflows/tests.yml/badge.svg)](https://github.com/Boostport/vault-plugin-secrets-grafana/actions/workflows/tests.yml)
+
 This is a [HashiCorp Vault](https://www.github.com/hashicorp/vault) plugin that generates tokens for 
-[Grafana Cloud](https://grafana.com/products/cloud/)and standalone [Grafana instances](https://grafana.com/grafana/).
+[Grafana Cloud](https://grafana.com/products/cloud/) and standalone [Grafana instances](https://grafana.com/grafana/).
 
 ## Download
 Binary releases are available at https://github.com/Boostport/vault-plugin-secrets-grafana/releases.
