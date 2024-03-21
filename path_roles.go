@@ -178,12 +178,12 @@ func pathRole(b *grafanaBackend) []*framework.Path {
 }
 
 func (b *grafanaBackend) pathRoleExistenceCheck(ctx context.Context, req *logical.Request, d *framework.FieldData) (bool, error) {
-	_, err := b.getRole(ctx, req.Storage, d.Get("name").(string))
+	entry, err := b.getRole(ctx, req.Storage, d.Get("name").(string))
 	if err != nil {
 		return false, err
 	}
 
-	return true, nil
+	return entry != nil, nil
 }
 
 func (b *grafanaBackend) pathRolesList(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
