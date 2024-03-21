@@ -296,7 +296,7 @@ func (b *grafanaBackend) pathRolesWrite(ctx context.Context, req *logical.Reques
 }
 
 func (b *grafanaBackend) pathRolesDelete(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
-	err := req.Storage.Delete(ctx, "role/"+d.Get("name").(string))
+	err := req.Storage.Delete(ctx, "roles/"+d.Get("name").(string))
 	if err != nil {
 		return nil, fmt.Errorf("error deleting grafana role: %w", err)
 	}
@@ -305,7 +305,7 @@ func (b *grafanaBackend) pathRolesDelete(ctx context.Context, req *logical.Reque
 }
 
 func setRole(ctx context.Context, s logical.Storage, name string, roleEntry *grafanaRoleEntry) error {
-	entry, err := logical.StorageEntryJSON("role/"+name, roleEntry)
+	entry, err := logical.StorageEntryJSON("roles/"+name, roleEntry)
 	if err != nil {
 		return err
 	}
@@ -326,7 +326,7 @@ func (b *grafanaBackend) getRole(ctx context.Context, s logical.Storage, name st
 		return nil, fmt.Errorf("missing role name")
 	}
 
-	entry, err := s.Get(ctx, "role/"+name)
+	entry, err := s.Get(ctx, "roles/"+name)
 	if err != nil {
 		return nil, err
 	}
