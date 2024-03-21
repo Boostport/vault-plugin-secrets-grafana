@@ -296,7 +296,12 @@ func (b *grafanaBackend) pathRolesWrite(ctx context.Context, req *logical.Reques
 }
 
 func (b *grafanaBackend) pathRolesDelete(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
-	err := req.Storage.Delete(ctx, "roles/"+d.Get("name").(string))
+	roleName := d.Get("role").(string)
+	if roleName == "" {
+		return logical.ErrorResponse("missing role"), nil
+	}
+
+	err := req.Storage.Delete(ctx, "roles/"+roleName)
 	if err != nil {
 		return nil, fmt.Errorf("error deleting grafana role: %w", err)
 	}
