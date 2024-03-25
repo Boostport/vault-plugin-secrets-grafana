@@ -5,7 +5,7 @@ services:
     command:
       - go test -v ./...
     environment:
-      - TEST_ACC=${TEST_ACC}
+      - VAULT_ACC=${VAULT_ACC}
       - TEST_GRAFANA_CLOUD_TOKEN=${TEST_GRAFANA_CLOUD_TOKEN}
       - TEST_GRAFANA_CLOUD_STACK_SLUG=${TEST_GRAFANA_CLOUD_STACK_SLUG}
       - TEST_GRAFANA_CLOUD_REGION=${TEST_GRAFANA_CLOUD_REGION}
