@@ -3,6 +3,7 @@ module github.com/Boostport/vault-plugin-secrets-grafana
 go 1.21
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-hclog v1.6.2
 	github.com/hashicorp/vault/api v1.11.0
 	github.com/hashicorp/vault/sdk v0.10.2
