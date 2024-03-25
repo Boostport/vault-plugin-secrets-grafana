@@ -66,7 +66,7 @@ func (b *grafanaBackend) reset() {
 }
 
 func (b *grafanaBackend) invalidate(_ context.Context, key string) {
-	if key == "config" {
+	if key == configStoragePath {
 		b.reset()
 	}
 }
