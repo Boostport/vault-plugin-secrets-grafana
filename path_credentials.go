@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/Boostport/vault-plugin-secrets-grafana/client"
+	"github.com/google/uuid"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -96,7 +96,7 @@ func (b *grafanaBackend) createToken(ctx context.Context, s logical.Storage, con
 		return nil, err
 	}
 
-	credentialName := fmt.Sprintf("vault-%d", time.Now().UnixNano())
+	credentialName := fmt.Sprintf("vault-%s", uuid.New())
 
 	if configType == GrafanaCloudType {
 		if roleEntry.Type == roleCloudAccessPolicy {
