@@ -164,9 +164,14 @@ func createCloudAccessPolicyToken(c *client.Grafana, credentialName string, role
 }
 
 func createCloudServiceAccountToken(c *client.Grafana, credentialName string, roleEntry *grafanaRoleEntry) (*grafanaToken, error) {
+	role := "None"
+	if roleEntry.Role != "" {
+		role = roleEntry.Role
+	}
+
 	serviceAccount, err := c.CreateGrafanaServiceAccountFromCloud(roleEntry.Stack, client.CreateServiceAccountInput{
 		Name: credentialName,
-		Role: roleEntry.Role,
+		Role: role,
 	})
 
 	if err != nil {
@@ -197,9 +202,14 @@ func createCloudServiceAccountToken(c *client.Grafana, credentialName string, ro
 }
 
 func createServiceAccountToken(c *client.Grafana, credentialName string, roleEntry *grafanaRoleEntry) (*grafanaToken, error) {
+	role := "None"
+	if roleEntry.Role != "" {
+		role = roleEntry.Role
+	}
+
 	serviceAccount, err := c.CreateServiceAccount(client.CreateServiceAccountInput{
 		Name: credentialName,
-		Role: roleEntry.Role,
+		Role: role,
 	})
 
 	if err != nil {
