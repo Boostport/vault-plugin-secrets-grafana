@@ -9,7 +9,7 @@ import (
 
 type CreateServiceAccountInput struct {
 	Name       string `json:"name"`
-	Role       string `json:"role,omitempty"`
+	Role       string `json:"role"`
 	IsDisabled *bool  `json:"isDisabled,omitempty"`
 }
 
