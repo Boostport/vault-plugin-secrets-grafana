@@ -145,3 +145,45 @@ func (g *Grafana) DeleteGrafanaServiceAccountFromCloud(stack string, serviceAcco
 
 	return nil
 }
+
+func (g *Grafana) CreateTemporaryStackGrafanaClient(stackSlug string, tempSaPrefix string, tempKeyDuration time.Duration) (tempClient *Grafana, cleanup func() error, err error) {
+	stack, err := g.StackBySlug(stackSlug)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	name := fmt.Sprintf("%s%d", tempSaPrefix, time.Now().UnixNano())
+
+	req := CreateServiceAccountInput{
+		Name: name,
+		Role: "Admin",
+	}
+
+	sa, err := g.CreateGrafanaServiceAccountFromCloud(stackSlug, req)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating temporary service account: %w", err)
+	}
+
+	tokenRequest := CreateServiceAccountTokenInput{
+		Name:             name,
+		ServiceAccountID: sa.ID,
+		SecondsToLive:    int64(tempKeyDuration.Seconds()),
+	}
+
+	token, err := g.CreateGrafanaServiceAccountTokenFromCloud(stackSlug, tokenRequest)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating temporary service account token: %w", err)
+	}
+
+	client, err := New(stack.URL, token.Key)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating temporary client: %w", err)
+	}
+
+	cleanup = func() error {
+		err = client.DeleteServiceAccount(sa.ID)
+		return err
+	}
+
+	return client, cleanup, nil
+}

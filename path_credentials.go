@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/Boostport/vault-plugin-secrets-grafana/client"
 	"github.com/google/uuid"
@@ -176,6 +177,49 @@ func createCloudServiceAccountToken(c *client.Grafana, credentialName string, ro
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating service account: %w", err)
+	}
+
+	if len(roleEntry.RBACRoles) > 0 {
+		instanceClient, cleanup, err := c.CreateTemporaryStackGrafanaClient(roleEntry.Stack, "vault-temp-service-account-", 5*time.Minute)
+
+		if err != nil {
+			err := c.DeleteGrafanaServiceAccountFromCloud(roleEntry.Stack, serviceAccount.ID)
+
+			if err != nil {
+				return nil, fmt.Errorf("error deleting service account after error creating temporary client: %w", err)
+			}
+
+			return nil, fmt.Errorf("error creating temporary client: %w", err)
+		}
+
+		defer cleanup()
+
+		roleUIDs, err := customRBACRoleNamesToIDs(instanceClient, roleEntry.RBACRoles)
+
+		if err != nil {
+			err := c.DeleteGrafanaServiceAccountFromCloud(roleEntry.Stack, serviceAccount.ID)
+
+			if err != nil {
+				return nil, fmt.Errorf("error deleting service account after error converting role names to IDs: %w", err)
+			}
+			return nil, fmt.Errorf("error converting role names to IDs: %w", err)
+		}
+
+		err = instanceClient.SetServiceAccountRoleAssignments(client.ServiceAccountRoleAssignmentsInput{
+			ServiceAccountID: serviceAccount.ID,
+			RoleUIDs:         roleUIDs,
+		})
+
+		if err != nil {
+			err := c.DeleteGrafanaServiceAccountFromCloud(roleEntry.Stack, serviceAccount.ID)
+
+			if err != nil {
+				return nil, fmt.Errorf("error deleting service account after error setting role assignments: %w", err)
+
+			}
+
+			return nil, fmt.Errorf("error setting service account role assignments: %w", err)
+		}
 	}
 
 	token, err := c.CreateGrafanaServiceAccountTokenFromCloud(roleEntry.Stack, client.CreateServiceAccountTokenInput{
