@@ -253,16 +253,8 @@ func (e *testCloudEnv) CleanupCreds(t *testing.T) {
 	}
 
 	if len(e.ServiceAccountIDs) > 0 {
-		tmpClient, cleanup, err := client.CreateTemporaryStackGrafanaClient(e.CloudStackSlug, "vault-temp-service-account-", 5*time.Minute)
-
-		if err != nil {
-			t.Fatalf("unexpected error creating temporary stack client: %s", err)
-		}
-
-		defer cleanup()
-
 		for _, id := range e.ServiceAccountIDs {
-			err = tmpClient.DeleteServiceAccount(id)
+			err = client.DeleteGrafanaServiceAccountFromCloud(e.CloudStackSlug, id)
 			if err != nil {
 				t.Fatalf("unexpected error deleting service account: %s", err)
 			}

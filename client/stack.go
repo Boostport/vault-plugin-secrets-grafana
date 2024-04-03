@@ -136,61 +136,12 @@ func (g *Grafana) CreateGrafanaServiceAccountTokenFromCloud(stack string, input 
 }
 
 func (g *Grafana) DeleteGrafanaServiceAccountFromCloud(stack string, serviceAccountID int64) error {
-	tempClient, cleanup, err := g.CreateTemporaryStackGrafanaClient(stack, "vault-temp-service-account-", 5*time.Minute)
+
+	err := g.do(http.MethodDelete, fmt.Sprintf("/api/instances/%s/api/serviceaccounts/%d", stack, serviceAccountID), nil, nil, nil)
 
 	if err != nil {
-		return fmt.Errorf("error creating temporary stack client: %w", err)
-	}
-
-	defer cleanup()
-
-	err = tempClient.DeleteServiceAccount(serviceAccountID)
-
-	if err != nil {
-		return fmt.Errorf("error deleting service account from cloud: %w", err)
+		return fmt.Errorf("error deleting service account from cloud token: %w", err)
 	}
 
 	return nil
-}
-
-func (g *Grafana) CreateTemporaryStackGrafanaClient(stackSlug string, tempSaPrefix string, tempKeyDuration time.Duration) (tempClient *Grafana, cleanup func() error, err error) {
-	stack, err := g.StackBySlug(stackSlug)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	name := fmt.Sprintf("%s%d", tempSaPrefix, time.Now().UnixNano())
-
-	req := CreateServiceAccountInput{
-		Name: name,
-		Role: "Admin",
-	}
-
-	sa, err := g.CreateGrafanaServiceAccountFromCloud(stackSlug, req)
-	if err != nil {
-		return nil, nil, fmt.Errorf("error creating temporary service account: %w", err)
-	}
-
-	tokenRequest := CreateServiceAccountTokenInput{
-		Name:             name,
-		ServiceAccountID: sa.ID,
-		SecondsToLive:    int64(tempKeyDuration.Seconds()),
-	}
-
-	token, err := g.CreateGrafanaServiceAccountTokenFromCloud(stackSlug, tokenRequest)
-	if err != nil {
-		return nil, nil, fmt.Errorf("error creating temporary service account token: %w", err)
-	}
-
-	client, err := New(stack.URL, token.Key)
-	if err != nil {
-		return nil, nil, fmt.Errorf("error creating temporary client: %w", err)
-	}
-
-	cleanup = func() error {
-		err = client.DeleteServiceAccount(sa.ID)
-		return err
-	}
-
-	return client, cleanup, nil
 }
