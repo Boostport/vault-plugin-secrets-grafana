@@ -15,11 +15,11 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
-      - name: Call Grafana API
-        run: go run cmd/keep-grafana-instance-alive/main.go
+      - name: Send log to Grafana Cloud
+        run: 'curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $TEST_GRAFANA_CLOUD_STACK_IDENTIFIER:$TEST_GRAFANA_CLOUD_TOKEN" -d '{"streams": [{"stream": {"Language": "Curl", "source": "GitHub Actions"},"values": [["'"$(($(date +%s)*1000000000))"'", "Keeping this Grafana instance alive!"]]}]}' https://logs-prod-006.grafana.net/loki/api/v1/push'
         env:
-          GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.GRAFANA_SERVICE_ACCOUNT_TOKEN }}
-          GRAFANA_INSTANCE_URL: ${{ secrets.GRAFANA_INSTANCE_URL }}
+          TEST_GRAFANA_CLOUD_STACK_IDENTIFIER: ${{ secrets.TEST_GRAFANA_CLOUD_STACK_IDENTIFIER }}
+          TEST_GRAFANA_CLOUD_TOKEN: ${{ secrets.TEST_GRAFANA_CLOUD_TOKEN }}
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
