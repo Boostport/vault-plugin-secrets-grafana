@@ -9,18 +9,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set environment variables from .env
-        uses: xom9ikk/dotenv@v2.2.0
-      - name: Setup go
-        uses: actions/setup-go@v4
-        with:
-          go-version: ${{ env.GO_VERSION }}
       - name: Send log to Grafana Cloud
-        run: > 
-          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $TEST_GRAFANA_CLOUD_STACK_IDENTIFIER:$TEST_GRAFANA_CLOUD_TOKEN" -d '{"streams": [{"stream": {"Language": "Curl", "source": "GitHub Actions"},"values": [["'"$(($(date +%s)*1000000000))"'", "Keeping this Grafana instance alive!"]]}]}' https://logs-prod-006.grafana.net/loki/api/v1/push
-        env:
-          TEST_GRAFANA_CLOUD_STACK_IDENTIFIER: ${{ secrets.TEST_GRAFANA_CLOUD_STACK_IDENTIFIER }}
-          TEST_GRAFANA_CLOUD_TOKEN: ${{ secrets.TEST_GRAFANA_CLOUD_TOKEN }}
+        run: |
+          curl --fail-with-body -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.TEST_GRAFANA_CLOUD_STACK_LOGS_USER_ID }}:${{ secrets.TEST_GRAFANA_CLOUD_TOKEN }}" -d '{"streams": [{"stream": {"Language": "Curl", "source": "GitHub Actions"},"values": [["'"$(($(date +%s)*1000000000))"'", "Keeping this Grafana instance alive!"]]}]}' https://logs-prod-006.grafana.net/loki/api/v1/push
+
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
