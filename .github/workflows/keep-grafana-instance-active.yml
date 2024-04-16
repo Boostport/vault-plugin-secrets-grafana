@@ -1,7 +1,7 @@
 name: Keep Grafana Instance Active
 on:
   schedule:
-    - cron: '0 0/6 * * *'
+    - cron: '0 0/3 * * *'
 
 jobs:
   keep-grafana-instance-active:
