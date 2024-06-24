@@ -3,10 +3,16 @@ on:
   pull_request_target:
 
 jobs:
-  test:
+  approve-pr-tests:
     runs-on: ubuntu-latest
     environment:
       name: "Pull Request Tests"
+    steps:
+      - run: "echo 'Execution of tests pending approval'"
+
+  test:
+    needs: ["approve-pr-tests"]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
