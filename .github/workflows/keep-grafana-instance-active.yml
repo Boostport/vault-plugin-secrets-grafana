@@ -1,7 +1,7 @@
 name: Keep Grafana Instance Active
 on:
   schedule:
-    - cron: '0 0/3 * * *'
+    - cron: '0 0/2 * * *'
 
 jobs:
   keep-grafana-instance-active:
@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Get home dashboard
         run: |
-          curl --fail-with-body -X GET -H "Authorization: Bearer ${{ secrets.TEST_GRAFANA_INSTANCE_API_TOKEN }}" https://${{ secrets.TEST_GRAFANA_CLOUD_STACK_SLUG }}.grafana.net/api/dashboards/home
+          curl -X GET -H "Authorization: Bearer ${{ secrets.TEST_GRAFANA_INSTANCE_API_TOKEN }}" https://${{ secrets.TEST_GRAFANA_CLOUD_STACK_SLUG }}.grafana.net/api/dashboards/home
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
