@@ -186,7 +186,7 @@ func (b *grafanaBackend) pathRoleExistenceCheck(ctx context.Context, req *logica
 	return entry != nil, nil
 }
 
-func (b *grafanaBackend) pathRolesList(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *grafanaBackend) pathRolesList(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
 	entries, err := req.Storage.List(ctx, "roles/")
 	if err != nil {
 		return nil, err

@@ -99,7 +99,7 @@ func pathConfig(b *grafanaBackend) *framework.Path {
 	}
 }
 
-func (b *grafanaBackend) pathConfigExistenceCheck(ctx context.Context, req *logical.Request, d *framework.FieldData) (bool, error) {
+func (b *grafanaBackend) pathConfigExistenceCheck(ctx context.Context, req *logical.Request, _ *framework.FieldData) (bool, error) {
 	out, err := req.Storage.Get(ctx, req.Path)
 	if err != nil {
 		return false, fmt.Errorf("existence check failed: %w", err)
@@ -108,7 +108,7 @@ func (b *grafanaBackend) pathConfigExistenceCheck(ctx context.Context, req *logi
 	return out != nil, nil
 }
 
-func (b *grafanaBackend) pathConfigRead(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *grafanaBackend) pathConfigRead(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
 	config, err := getConfig(ctx, req.Storage)
 	if err != nil {
 		return nil, err
@@ -173,7 +173,7 @@ func (b *grafanaBackend) pathConfigWrite(ctx context.Context, req *logical.Reque
 	return nil, nil
 }
 
-func (b *grafanaBackend) pathConfigDelete(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
+func (b *grafanaBackend) pathConfigDelete(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
 	err := req.Storage.Delete(ctx, configStoragePath)
 
 	if err == nil {
