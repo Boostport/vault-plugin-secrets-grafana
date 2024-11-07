@@ -36,7 +36,7 @@ func (b *grafanaBackend) grafanaToken() *framework.Secret {
 	}
 }
 
-func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
 	client, err := b.getClient(ctx, req.Storage)
 	if err != nil {
 		return nil, fmt.Errorf("error getting client: %w", err)
@@ -85,7 +85,7 @@ func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, 
 	return nil, nil
 }
 
-func (b *grafanaBackend) tokenRenew(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *grafanaBackend) tokenRenew(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
 	roleRaw, ok := req.Secret.InternalData["vault_role"]
 	if !ok {
 		return nil, fmt.Errorf("secret is missing role internal data")
