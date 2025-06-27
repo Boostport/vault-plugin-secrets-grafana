@@ -1,3 +1,4 @@
+version: 2
 builds:
   - main: ./cmd/vault-plugin-secrets-grafana
     env:
@@ -14,7 +15,8 @@ gomod:
   proxy: true
 
 archives:
-  - format: binary
+  - formats:
+    - binary
 
 checksum:
   algorithm: sha256
