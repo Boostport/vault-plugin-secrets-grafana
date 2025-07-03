@@ -1,9 +1,8 @@
 package vault_plugin_secrets_grafana
 
-// Stepwise test temporary disabled due to https://github.com/hashicorp/vault-testing-stepwise/issues/10
-/*
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"sync"
 	"testing"
@@ -28,11 +27,26 @@ func TestAccUserToken(t *testing.T) {
 		t.SkipNow()
 	}
 	envOptions := &stepwise.MountOptions{
-		RegistryName:    "grafana",
+		RegistryName:    "secrets-grafana",
 		PluginType:      api.PluginTypeSecrets,
 		PluginName:      "vault-plugin-secrets-grafana",
-		MountPathPrefix: "grafana",
+		MountPathPrefix: "secrets-grafana",
 	}
+
+	srcDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmpDir, err := ioutil.TempDir("", "bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	binName, binPath, sha256value, err := stepwise.CompilePlugin("secrets-grafana", "vault-plugin-secrets-grafana", srcDir, tmpDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(binName, binPath, sha256value)
 
 	roleName := "vault-stepwise-user-role"
 
@@ -129,4 +143,3 @@ func testAccUserCredRead(t *testing.T, roleName string, token *string) stepwise.
 		},
 	}
 }
-*/
