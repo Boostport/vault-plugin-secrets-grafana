@@ -2,6 +2,7 @@ package vault_plugin_secrets_grafana
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -56,9 +57,12 @@ func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, 
 		}
 
 		if stack != "" {
-			serviceAccountID := int64(req.Secret.InternalData["service_account_id"].(float64))
+			serviceAccountID, err := serviceAccountIDFromInternalData(req.Secret.InternalData["service_account_id"])
+			if err != nil {
+				return nil, err
+			}
 
-			err := client.DeleteGrafanaServiceAccountFromCloud(stack, serviceAccountID)
+			err = client.DeleteGrafanaServiceAccountFromCloud(stack, serviceAccountID)
 
 			if err != nil {
 				return nil, fmt.Errorf("error deleting grafana cloud service account: %w", err)
@@ -74,8 +78,14 @@ func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, 
 		}
 
 	} else {
-		serviceAccountID := req.Secret.InternalData["service_account_id"].(int64)
-		err := client.DeleteServiceAccount(serviceAccountID)
+		// InternalData round-trips through JSON when the lease is persisted, so
+		// the id arrives as float64 or json.Number, not the int64 it was stored
+		// as. A bare int64 assertion panics and kills the plugin process.
+		serviceAccountID, err := serviceAccountIDFromInternalData(req.Secret.InternalData["service_account_id"])
+		if err != nil {
+			return nil, err
+		}
+		err = client.DeleteServiceAccount(serviceAccountID)
 
 		if err != nil {
 			return nil, fmt.Errorf("error deleting grafana service account: %w", err)
@@ -83,6 +93,19 @@ func (b *grafanaBackend) tokenRevoke(ctx context.Context, req *logical.Request, 
 	}
 
 	return nil, nil
+}
+
+func serviceAccountIDFromInternalData(val any) (int64, error) {
+	switch v := val.(type) {
+	case int64:
+		return v, nil
+	case float64:
+		return int64(v), nil
+	case json.Number:
+		return v.Int64()
+	default:
+		return 0, fmt.Errorf("secret internal data has unexpected service_account_id type %T", val)
+	}
 }
 
 func (b *grafanaBackend) tokenRenew(ctx context.Context, req *logical.Request, _ *framework.FieldData) (*logical.Response, error) {
