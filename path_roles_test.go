@@ -29,7 +29,7 @@ var (
 func TestCloudAccessPolicyRole(t *testing.T) {
 	b, s := getTestBackend(t)
 
-	err := testConfigCreate(b, s, map[string]interface{}{
+	err := testConfigCreate(b, s, map[string]any{
 		"type":  GrafanaCloudType,
 		"token": "abcd",
 	})
@@ -39,7 +39,7 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 		for i := 1; i <= 10; i++ {
 			_, err := testTokenRoleCreate(t, b, s,
 				cloudAccessPolicyRoleName+strconv.Itoa(i),
-				map[string]interface{}{
+				map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  cloudAccessPolicyScopes,
@@ -56,7 +56,7 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - pass", func(t *testing.T) {
-		resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+		resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 			"type":    roleCloudAccessPolicy,
 			"region":  cloudAccessPolicyRegion,
 			"scopes":  cloudAccessPolicyScopes,
@@ -71,14 +71,14 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid type", func(t *testing.T) {
-		typeValues := map[string]interface{}{
+		typeValues := map[string]any{
 			"Invalid type": "invalid",
 			"Blank type":   "",
 			"Not a string": 100,
 		}
 		for d, v := range typeValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    v,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  cloudAccessPolicyScopes,
@@ -95,12 +95,12 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid region", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Empty region": "",
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  v,
 					"scopes":  cloudAccessPolicyScopes,
@@ -116,12 +116,12 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid scopes", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Empty string": "",
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  v,
@@ -138,14 +138,14 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid realms", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Number":       1,
 			"Empty string": "",
 			"String":       "test",
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  cloudAccessPolicyScopes,
@@ -162,14 +162,14 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid TTL", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Not a number":         "a",
 			"Negative number":      -1,
 			"Greater than max ttl": testMaxTTL + 10,
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  cloudAccessPolicyScopes,
@@ -186,14 +186,14 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid Max TTL", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Not a number":    "a",
 			"Negative number": -1,
 			"Less than ttl":   testTTL - 10,
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 					"type":    roleCloudAccessPolicy,
 					"region":  cloudAccessPolicyRegion,
 					"scopes":  cloudAccessPolicyScopes,
@@ -229,7 +229,7 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 	})
 
 	t.Run("Update User Role", func(t *testing.T) {
-		resp, err := testTokenRoleUpdate(t, b, s, cloudAccessPolicyRoleName, map[string]interface{}{
+		resp, err := testTokenRoleUpdate(t, b, s, cloudAccessPolicyRoleName, map[string]any{
 			"ttl":     "1m",
 			"max_ttl": "5h",
 		})
@@ -261,7 +261,7 @@ func TestCloudAccessPolicyRole(t *testing.T) {
 func TestServiceAccountRole(t *testing.T) {
 	b, s := getTestBackend(t)
 
-	err := testConfigCreate(b, s, map[string]interface{}{
+	err := testConfigCreate(b, s, map[string]any{
 		"type":  GrafanaCloudType,
 		"token": "abcd",
 	})
@@ -271,7 +271,7 @@ func TestServiceAccountRole(t *testing.T) {
 		for i := 1; i <= 10; i++ {
 			_, err := testTokenRoleCreate(t, b, s,
 				serviceAccountRoleName+strconv.Itoa(i),
-				map[string]interface{}{
+				map[string]any{
 					"type":    roleGrafanaServiceAccount,
 					"stack":   serviceAccountStack,
 					"role":    serviceAccountRole,
@@ -287,7 +287,7 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - pass", func(t *testing.T) {
-		resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+		resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]any{
 			"type":    roleGrafanaServiceAccount,
 			"stack":   serviceAccountStack,
 			"role":    serviceAccountRole,
@@ -301,14 +301,14 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid type", func(t *testing.T) {
-		typeValues := map[string]interface{}{
+		typeValues := map[string]any{
 			"Invalid type": "invalid",
 			"Blank type":   "",
 			"Not a string": 100,
 		}
 		for d, v := range typeValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]any{
 					"type":    v,
 					"stack":   serviceAccountStack,
 					"role":    serviceAccountRole,
@@ -324,12 +324,12 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid stack", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Empty stack": "",
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]any{
 					"type":    roleGrafanaServiceAccount,
 					"stack":   v,
 					"role":    serviceAccountRole,
@@ -344,14 +344,14 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid TTL", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Not a number":         "a",
 			"Negative number":      -1,
 			"Greater than max ttl": testMaxTTL + 10,
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]any{
 					"type":    roleGrafanaServiceAccount,
 					"stack":   serviceAccountStack,
 					"role":    serviceAccountRole,
@@ -367,14 +367,14 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Create User Role - fail on invalid Max TTL", func(t *testing.T) {
-		ttlValues := map[string]interface{}{
+		ttlValues := map[string]any{
 			"Not a number":    "a",
 			"Negative number": -1,
 			"Less than ttl":   testTTL - 10,
 		}
 		for d, v := range ttlValues {
 			t.Run(d, func(t *testing.T) {
-				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+				resp, err := testTokenRoleCreate(t, b, s, serviceAccountRoleName, map[string]any{
 					"type":    roleGrafanaServiceAccount,
 					"stack":   serviceAccountStack,
 					"role":    serviceAccountRole,
@@ -408,7 +408,7 @@ func TestServiceAccountRole(t *testing.T) {
 	})
 
 	t.Run("Update User Role", func(t *testing.T) {
-		resp, err := testTokenRoleUpdate(t, b, s, serviceAccountRoleName, map[string]interface{}{
+		resp, err := testTokenRoleUpdate(t, b, s, serviceAccountRoleName, map[string]any{
 			"ttl":     "1m",
 			"max_ttl": "5h",
 		})
@@ -437,7 +437,7 @@ func TestServiceAccountRole(t *testing.T) {
 }
 
 // Utility function to create a role while, returning any response (including errors).
-func testTokenRoleCreate(t *testing.T, b *grafanaBackend, s logical.Storage, roleName string, d map[string]interface{}) (*logical.Response, error) {
+func testTokenRoleCreate(t *testing.T, b *grafanaBackend, s logical.Storage, roleName string, d map[string]any) (*logical.Response, error) {
 	t.Helper()
 	resp, err := b.HandleRequest(context.Background(), &logical.Request{
 		Operation: logical.CreateOperation,
@@ -453,7 +453,7 @@ func testTokenRoleCreate(t *testing.T, b *grafanaBackend, s logical.Storage, rol
 }
 
 // Utility function to update a role while, returning any response (including errors).
-func testTokenRoleUpdate(t *testing.T, b *grafanaBackend, s logical.Storage, roleName string, d map[string]interface{}) (*logical.Response, error) {
+func testTokenRoleUpdate(t *testing.T, b *grafanaBackend, s logical.Storage, roleName string, d map[string]any) (*logical.Response, error) {
 	t.Helper()
 	resp, err := b.HandleRequest(context.Background(), &logical.Request{
 		Operation: logical.UpdateOperation,

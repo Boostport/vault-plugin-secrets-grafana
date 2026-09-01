@@ -20,7 +20,7 @@ func TestConfig(t *testing.T) {
 	t.Run("Test Configuration", func(t *testing.T) {
 
 		t.Run("Create Configuration (Cloud) - empty token", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": "",
 			})
@@ -28,7 +28,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Create Configuration (Grafana) - empty token", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"token": "",
 				"url":   configURL,
@@ -37,7 +37,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Create Configuration (Grafana) - empty url", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"token": token,
 				"url":   "",
@@ -46,7 +46,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Create Configuration (Grafana) - invalid url", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"token": token,
 				"url":   "/addd",
@@ -55,7 +55,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Create Configuration (Cloud) - pass", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": token,
 			})
@@ -63,7 +63,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Configuration (Cloud) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": token,
 				"url":   defaultGrafanaCloudURL,
@@ -72,7 +72,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Update Configuration (Cloud - set token) - pass", func(t *testing.T) {
-			err := testConfigUpdate(b, reqStorage, map[string]interface{}{
+			err := testConfigUpdate(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": "abcd",
 			})
@@ -80,7 +80,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Updated Configuration (Cloud - set token) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": "abcd",
 				"url":   defaultGrafanaCloudURL,
@@ -89,7 +89,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Update Configuration (Cloud - set type) - pass", func(t *testing.T) {
-			err := testConfigUpdate(b, reqStorage, map[string]interface{}{
+			err := testConfigUpdate(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"url":   configURL,
 				"token": "abcd",
@@ -98,7 +98,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Updated Configuration (Cloud - set type) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"url":   configURL,
 				"token": "abcd",
@@ -112,7 +112,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Create Configuration (Grafana) - pass", func(t *testing.T) {
-			err := testConfigCreate(b, reqStorage, map[string]interface{}{
+			err := testConfigCreate(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"token": token,
 				"url":   configURL,
@@ -121,7 +121,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Configuration (Grafana) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaType,
 				"token": token,
 				"url":   configURL,
@@ -130,7 +130,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Update Configuration (Grafana - set token and url) - pass", func(t *testing.T) {
-			err := testConfigUpdate(b, reqStorage, map[string]interface{}{
+			err := testConfigUpdate(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"url":   "https://test.com:19090",
 				"token": "abcd",
@@ -139,7 +139,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Updated Configuration (Grafana - set token and url) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"url":   "https://test.com:19090",
 				"token": "abcd",
@@ -148,7 +148,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Update Configuration (Grafana - set type) - pass", func(t *testing.T) {
-			err := testConfigUpdate(b, reqStorage, map[string]interface{}{
+			err := testConfigUpdate(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": token,
 				"url":   "",
@@ -157,7 +157,7 @@ func TestConfig(t *testing.T) {
 		})
 
 		t.Run("Read Updated Configuration (Grafana - set type) - pass", func(t *testing.T) {
-			err := testConfigRead(b, reqStorage, map[string]interface{}{
+			err := testConfigRead(b, reqStorage, map[string]any{
 				"type":  GrafanaCloudType,
 				"token": token,
 				"url":   defaultGrafanaCloudURL,
@@ -172,7 +172,7 @@ func TestConfig(t *testing.T) {
 	})
 }
 
-func testConfigCreate(b logical.Backend, s logical.Storage, d map[string]interface{}) error {
+func testConfigCreate(b logical.Backend, s logical.Storage, d map[string]any) error {
 	resp, err := b.HandleRequest(context.Background(), &logical.Request{
 		Operation: logical.CreateOperation,
 		Path:      configStoragePath,
@@ -205,7 +205,7 @@ func testConfigDelete(b logical.Backend, s logical.Storage) error {
 	return nil
 }
 
-func testConfigUpdate(b logical.Backend, s logical.Storage, d map[string]interface{}) error {
+func testConfigUpdate(b logical.Backend, s logical.Storage, d map[string]any) error {
 	resp, err := b.HandleRequest(context.Background(), &logical.Request{
 		Operation: logical.UpdateOperation,
 		Path:      configStoragePath,
@@ -222,7 +222,7 @@ func testConfigUpdate(b logical.Backend, s logical.Storage, d map[string]interfa
 	return nil
 }
 
-func testConfigRead(b logical.Backend, s logical.Storage, expected map[string]interface{}) error {
+func testConfigRead(b logical.Backend, s logical.Storage, expected map[string]any) error {
 	resp, err := b.HandleRequest(context.Background(), &logical.Request{
 		Operation: logical.ReadOperation,
 		Path:      configStoragePath,

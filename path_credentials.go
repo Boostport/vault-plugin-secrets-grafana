@@ -69,9 +69,9 @@ func (b *grafanaBackend) createUserCreds(ctx context.Context, req *logical.Reque
 	// The response is divided into two objects (1) internal data and (2) data.
 	// If you want to reference any information in your code, you need to
 	// store it in internal data!
-	resp := b.Secret(grafanaTokenType).Response(map[string]interface{}{
+	resp := b.Secret(grafanaTokenType).Response(map[string]any{
 		"token": token.Token,
-	}, map[string]interface{}{
+	}, map[string]any{
 		"is_cloud":           token.IsCloud,
 		"stack":              token.Stack,
 		"region":             token.Region,
