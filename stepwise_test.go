@@ -1,7 +1,7 @@
 package vault_plugin_secrets_grafana
 
 // Stepwise test temporary disabled due to https://github.com/hashicorp/vault-testing-stepwise/issues/10
-/*
+
 import (
 	"fmt"
 	"os"
@@ -35,7 +35,6 @@ func TestAccUserToken(t *testing.T) {
 	}
 
 	roleName := "vault-stepwise-user-role"
-
 	cred := new(string)
 	stepwise.Run(t, stepwise.Case{
 		Precheck:    func() { testAccPreCheck(t) },
@@ -73,7 +72,7 @@ func testAccConfig(_ *testing.T) stepwise.Step {
 	return stepwise.Step{
 		Operation: stepwise.UpdateOperation,
 		Path:      "config",
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":  GrafanaCloudType,
 			"token": os.Getenv(envVarGrafanaCloudToken),
 		},
@@ -84,7 +83,7 @@ func testAccUserRole(t *testing.T, roleName string) stepwise.Step {
 	return stepwise.Step{
 		Operation: stepwise.UpdateOperation,
 		Path:      "roles/" + roleName,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":    roleCloudAccessPolicy,
 			"region":  os.Getenv(envVarGrafanaCloudRegion),
 			"scopes":  stepwiseTestScopes,
@@ -129,4 +128,3 @@ func testAccUserCredRead(t *testing.T, roleName string, token *string) stepwise.
 		},
 	}
 }
-*/
