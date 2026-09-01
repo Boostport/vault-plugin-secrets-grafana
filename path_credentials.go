@@ -289,16 +289,27 @@ func createServiceAccountToken(c *client.Grafana, credentialName string, roleEnt
 		}
 	}
 
+	// Some Grafana deployments (e.g. AWS Managed Grafana) reject tokens without
+	// an expiry, so always set one: the longest lifetime the role's Vault lease
+	// can reach, falling back to 24h when the role sets no TTLs. The service
+	// account is deleted on lease revocation, so the token never outlives it.
+	tokenTTL := roleEntry.MaxTTL
+	if tokenTTL == 0 {
+		tokenTTL = roleEntry.TTL
+	}
+	if tokenTTL == 0 {
+		tokenTTL = 24 * time.Hour
+	}
+
 	token, err := c.CreateServiceAccountToken(client.CreateServiceAccountTokenInput{
 		Name:             credentialName,
 		ServiceAccountID: serviceAccount.ID,
+		SecondsToLive:    int64(tokenTTL.Seconds()),
 	})
 
 	if err != nil {
-		err := deleteServiceAccount(c, serviceAccount.ID)
-
-		if err != nil {
-			return nil, fmt.Errorf("error deleting service account after error creating token: %w", err)
+		if delErr := deleteServiceAccount(c, serviceAccount.ID); delErr != nil {
+			return nil, fmt.Errorf("error deleting service account after error creating token: %w", delErr)
 		}
 		return nil, fmt.Errorf("error creating service account token: %w", err)
 	}
