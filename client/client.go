@@ -36,7 +36,7 @@ func New(baseURL, bearerToken string) (*Grafana, error) {
 	}, nil
 }
 
-func (g *Grafana) do(method, requestPath string, query url.Values, body []byte, responseStruct interface{}) error {
+func (g *Grafana) do(method, requestPath string, query url.Values, body []byte, responseStruct any) error {
 	requestURL := g.baseURL
 	requestURL.Path = path.Join(requestURL.Path, requestPath)
 	requestURL.RawQuery = query.Encode()
@@ -59,13 +59,13 @@ func (g *Grafana) do(method, requestPath string, query url.Values, body []byte, 
 		return fmt.Errorf("error making request: %w", err)
 	}
 
+	defer resp.Body.Close()
+
 	bodyContents, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		return fmt.Errorf("error reading response body: %w", err)
 	}
-
-	resp.Body.Close()
 
 	if resp.StatusCode > 299 {
 		return fmt.Errorf("error response from server (%d): %s", resp.StatusCode, bodyContents)

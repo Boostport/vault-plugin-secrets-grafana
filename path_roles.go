@@ -71,8 +71,8 @@ func (r *grafanaRoleEntry) validate(configType string) error {
 	return nil
 }
 
-func (r *grafanaRoleEntry) toResponseData() map[string]interface{} {
-	respData := map[string]interface{}{
+func (r *grafanaRoleEntry) toResponseData() map[string]any {
+	respData := map[string]any{
 		"type":       r.Type,
 		"stack":      r.Stack,
 		"region":     r.Region,

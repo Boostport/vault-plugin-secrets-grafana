@@ -73,7 +73,7 @@ func (e *testCloudEnv) AddConfig(t *testing.T) {
 		Operation: logical.CreateOperation,
 		Path:      "config",
 		Storage:   e.Storage,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":  GrafanaCloudType,
 			"token": e.Token,
 		},
@@ -127,7 +127,7 @@ func (e *testCloudEnv) GetInstanceEnv(t *testing.T) *testInstanceEnv {
 		Operation: logical.CreateOperation,
 		Path:      "config",
 		Storage:   instanceTestEnv.Storage,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":  GrafanaType,
 			"token": e.SecretToken,
 			"url":   stack.URL,
@@ -146,7 +146,7 @@ func (e *testCloudEnv) AddAccessPolicyRole(t *testing.T) {
 		Operation: logical.UpdateOperation,
 		Path:      "roles/test-access-policy",
 		Storage:   e.Storage,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":   roleCloudAccessPolicy,
 			"region": e.CloudRegion,
 			"scopes": []string{"accesspolicies:delete", "accesspolicies:read", "accesspolicies:write", "stacks:read", "stack-service-accounts:write"},
@@ -163,7 +163,7 @@ func (e *testCloudEnv) AddServiceAccountRole(t *testing.T) {
 		Operation: logical.UpdateOperation,
 		Path:      "roles/test-service-account",
 		Storage:   e.Storage,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"type":  roleGrafanaServiceAccount,
 			"stack": e.CloudStackSlug,
 			"role":  "Admin",
@@ -306,7 +306,7 @@ func (e *testInstanceEnv) AddServiceAccountRoleWithCustomGrafanaRoles(t *testing
 		Operation: logical.UpdateOperation,
 		Path:      "roles/test-service-account-with-roles",
 		Storage:   e.Storage,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"role":       "Admin",
 			"rbac_roles": []string{customGrafanaRoleName},
 		},
